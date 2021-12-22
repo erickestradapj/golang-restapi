@@ -46,10 +46,10 @@ func (user *User) insert() {
 }
 
 /* ===== LIST ALL ROWS===== */
-func ListUsers() Users {
+func ListUsers() (Users, error) {
 	sql := "SELECT id, username, password, email FROM users"
 	users := Users{}
-	rows, _ := db.Query(sql)
+	rows, error := db.Query(sql)
 
 	for rows.Next() {
 		user := User{}
@@ -57,21 +57,23 @@ func ListUsers() Users {
 		users = append(users, user)
 	}
 
-	return users
+	return users, error
 }
 
 /* ===== GET A ROW ===== */
-func GetUser(id int) *User {
+func GetUser(id int) (*User, error) {
 	user := NewUser("", "", "")
 
 	sql := "SELECT id, username, password, email FROM users WHERE id=?"
-	rows, _ := db.Query(sql, id)
-
-	for rows.Next() {
-		rows.Scan(&user.Id, &user.Username, &user.Password, &user.Email)
+	if rows, error := db.Query(sql, id); error != nil {
+		return nil, error
+	} else {
+		for rows.Next() {
+			rows.Scan(&user.Id, &user.Username, &user.Password, &user.Email)
+		}
+		return user, nil
 	}
 
-	return user
 }
 
 /* ===== UPDATE ROW===== */
