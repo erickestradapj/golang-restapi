@@ -1,12 +1,20 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
+	"gorestapi/db"
+	"gorestapi/models"
 	"net/http"
 )
 
 func GetUsers(res http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(res, "User list")
+	db.Connect()
+	users := models.ListUsers()
+	db.Close()
+
+	output, _ := json.Marshal(users)
+	fmt.Fprintln(res, string(output))
 }
 
 func GetUser(res http.ResponseWriter, req *http.Request) {
