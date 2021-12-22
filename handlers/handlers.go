@@ -6,10 +6,12 @@ import (
 	"gorestapi/db"
 	"gorestapi/models"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func GetUsers(res http.ResponseWriter, req *http.Request) {
-
 	res.Header().Set("Content-Type", "application/json")
 
 	db.Connect()
@@ -21,7 +23,18 @@ func GetUsers(res http.ResponseWriter, req *http.Request) {
 }
 
 func GetUser(res http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(res, "Get user")
+	res.Header().Set("Content-Type", "application/json")
+
+	// Get ID
+	vars := mux.Vars(req)
+	userID, _ := strconv.Atoi(vars["id"])
+
+	db.Connect()
+	user := models.GetUser(userID)
+	db.Close()
+
+	output, _ := json.Marshal(user)
+	fmt.Fprintln(res, string(output))
 }
 
 func CreateUser(res http.ResponseWriter, req *http.Request) {
