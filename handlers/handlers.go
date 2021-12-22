@@ -38,7 +38,23 @@ func GetUser(res http.ResponseWriter, req *http.Request) {
 }
 
 func CreateUser(res http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(res, "Create user")
+	res.Header().Set("Content-Type", "application/json")
+
+	// Get row
+	user := models.User{}
+
+	decoder := json.NewDecoder(req.Body)
+
+	if err := decoder.Decode(&user); err != nil {
+		fmt.Fprintln(res, http.StatusUnprocessableEntity)
+	} else {
+		db.Connect()
+		user.Save()
+		db.Close()
+	}
+
+	output, _ := json.Marshal(user)
+	fmt.Fprintln(res, string(output))
 }
 
 func UpdateUser(res http.ResponseWriter, req *http.Request) {
