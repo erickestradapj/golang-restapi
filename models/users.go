@@ -71,9 +71,9 @@ func GetUser(id int) (*User, error) {
 		for rows.Next() {
 			rows.Scan(&user.Id, &user.Username, &user.Password, &user.Email)
 		}
+
 		return user, nil
 	}
-
 }
 
 /* ===== UPDATE ROW===== */

@@ -50,7 +50,7 @@ func ExistsTable(tableName string) bool {
 }
 
 /* ===== CREATE TABLE ===== */
-func CreateTable(schema string, name string) {
+func CreateTable(schema, name string) {
 	if !ExistsTable(name) {
 		_, err := db.Exec(schema)
 		if err != nil {
@@ -59,10 +59,10 @@ func CreateTable(schema string, name string) {
 	}
 }
 
-/* ===== POLYMORPHISM - EXEC ===== */
+/* ===== TRUNCATE TABLE ===== */
 func TruncateTable(tableName string) {
 	sql := fmt.Sprintf("TRUNCATE %s", tableName)
-	Exec(sql)
+	db.Exec(sql)
 }
 
 /* ===== POLYMORPHISM - EXEC ===== */
@@ -88,5 +88,5 @@ func Query(query string, args ...interface{}) (*sql.Rows, error) {
 		fmt.Println(err)
 	}
 
-	return rows, err
+	return rows, nil
 }
